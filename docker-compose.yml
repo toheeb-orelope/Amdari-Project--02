@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: sentinelpay-postgres
+    environment:
+      POSTGRES_USER: sentinel
+      POSTGRES_PASSWORD: sentinel123
+      POSTGRES_DB: sentinelpay
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./seed/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis:7-alpine
+    container_name: sentinelpay-redis
+    ports:
+      - "6379:6379"
+
+  payments-api:
+    build: ./services/payments-api
+    container_name: sentinelpay-payments
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_URL: postgresql://sentinel:sentinel123@postgres:5432/sentinelpay
+      REDIS_URL: redis://redis:6379/0
+      JWT_SECRET: ${JWT_SECRET_FROM_ENV}
+      AWS_ACCESS_KEY_ID: REDACTED_AWS_ACCESS_KEY_EXAMPLE
+      AWS_SECRET_ACCESS_KEY: REDACTED_AWS_SECRET_EXAMPLE
+      AWS_REGION: af-south-1
+      KYC_BUCKET: sentinelpay-kyc-documents
+      WEBHOOK_TIMEOUT: "10"
+      ENVIRONMENT: development
+    depends_on:
+      - postgres
+      - redis
+
+  kyc-api:
+    build: ./services/kyc-api
+    container_name: sentinelpay-kyc
+    ports:
+      - "8002:8002"
+    environment:
+      DATABASE_URL: postgresql://sentinel:sentinel123@postgres:5432/sentinelpay
+      REDIS_URL: redis://redis:6379/1
+      JWT_SECRET: ${JWT_SECRET_FROM_ENV}
+      AWS_ACCESS_KEY_ID: REDACTED_AWS_ACCESS_KEY_EXAMPLE
+      AWS_SECRET_ACCESS_KEY: REDACTED_AWS_SECRET_EXAMPLE
+      AWS_REGION: af-south-1
+      KYC_BUCKET: sentinelpay-kyc-documents
+      BVN_LOOKUP_URL: https://api.mock-cbn.local/bvn
+      ENVIRONMENT: development
+    depends_on:
+      - postgres
+      - redis
+
+volumes:
+  postgres_data:
