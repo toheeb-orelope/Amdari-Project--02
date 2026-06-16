@@ -24,7 +24,7 @@ services:
     build: ./services/payments-api
     container_name: sentinelpay-payments
     ports:
-      - "8001:8001"
+      - "18001:8001"
     environment:
       DATABASE_URL: postgresql://sentinel:sentinel123@postgres:5432/sentinelpay
       REDIS_URL: redis://redis:6379/0
@@ -43,7 +43,7 @@ services:
     build: ./services/kyc-api
     container_name: sentinelpay-kyc
     ports:
-      - "8002:8002"
+      - "18002:8002"
     environment:
       DATABASE_URL: postgresql://sentinel:sentinel123@postgres:5432/sentinelpay
       REDIS_URL: redis://redis:6379/1
