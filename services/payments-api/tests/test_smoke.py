@@ -1,22 +1,56 @@
-"""Smoke tests for payments-api.
+"""Smoke tests for payments-api startup and security boundaries."""
 
-NOTE: These are happy-path only. Part of the engagement is to add tests that
-demonstrate each fix actually closes the underlying vulnerability.
-"""
-import json
-import pytest
+import os
+import unittest
+
+os.environ["ENVIRONMENT"] = "testing"
+os.environ["JWT_SECRET"] = "test-jwt-secret-with-at-least-32-bytes"
+os.environ["SECRET_KEY"] = "test-session-secret-with-at-least-32-bytes"
+os.environ["RATELIMIT_STORAGE_URI"] = "memory://"
 
 from app.main import create_app
 
 
-@pytest.fixture
-def client():
-    app = create_app()
-    app.config["TESTING"] = True
-    return app.test_client()
+class PaymentsApiSmokeTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        app = create_app()
+        app.config["TESTING"] = True
+        cls.client = app.test_client()
+
+    def test_health(self):
+        response = self.client.get("/health")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get_json()["status"], "ok")
+
+    def test_protected_route_requires_authentication(self):
+        response = self.client.get("/v1/accounts/")
+
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            response.get_json()["error"],
+            "missing or malformed Authorization header",
+        )
+
+    def test_registration_rejects_non_object_json(self):
+        response = self.client.post("/v1/auth/register", json=[])
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.get_json()["error"],
+            "request body must be a JSON object",
+        )
+
+    def test_unknown_route_does_not_expose_debug_details(self):
+        response = self.client.get("/route-that-does-not-exist")
+        body = response.get_json()
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(set(body), {"error"})
+        self.assertNotIn("trace", body)
+        self.assertNotIn("type", body)
 
 
-def test_health(client):
-    resp = client.get("/health")
-    assert resp.status_code == 200
-    assert resp.get_json()["status"] == "ok"
+if __name__ == "__main__":
+    unittest.main()

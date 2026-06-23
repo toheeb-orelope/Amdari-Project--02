@@ -5,9 +5,9 @@ services:
     image: postgres:15-alpine
     container_name: sentinelpay-postgres
     environment:
-      POSTGRES_USER: sentinel
-      POSTGRES_PASSWORD: sentinel123
-      POSTGRES_DB: sentinelpay
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
@@ -26,15 +26,16 @@ services:
     ports:
       - "18001:8001"
     environment:
-      DATABASE_URL: postgresql://sentinel:sentinel123@postgres:5432/sentinelpay
-      REDIS_URL: redis://redis:6379/0
-      JWT_SECRET: ${JWT_SECRET_FROM_ENV}
-      AWS_ACCESS_KEY_ID: REDACTED_AWS_ACCESS_KEY_EXAMPLE
-      AWS_SECRET_ACCESS_KEY: REDACTED_AWS_SECRET_EXAMPLE
-      AWS_REGION: af-south-1
-      KYC_BUCKET: sentinelpay-kyc-documents
-      WEBHOOK_TIMEOUT: "10"
-      ENVIRONMENT: development
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+      KYC_BUCKET: ${KYC_BUCKET}
+      WEBHOOK_TIMEOUT: ${WEBHOOK_TIMEOUT}
+      RATELIMIT_STORAGE_URI: ${PAYMENTS_RATELIMIT_STORAGE_URI}
+      SECRET_KEY: ${SECRET_KEY}
+      ENVIRONMENT: ${ENVIRONMENT}
     depends_on:
       - postgres
       - redis
@@ -45,15 +46,15 @@ services:
     ports:
       - "18002:8002"
     environment:
-      DATABASE_URL: postgresql://sentinel:sentinel123@postgres:5432/sentinelpay
-      REDIS_URL: redis://redis:6379/1
-      JWT_SECRET: ${JWT_SECRET_FROM_ENV}
-      AWS_ACCESS_KEY_ID: REDACTED_AWS_ACCESS_KEY_EXAMPLE
-      AWS_SECRET_ACCESS_KEY: REDACTED_AWS_SECRET_EXAMPLE
-      AWS_REGION: af-south-1
-      KYC_BUCKET: sentinelpay-kyc-documents
-      BVN_LOOKUP_URL: https://api.mock-cbn.local/bvn
-      ENVIRONMENT: development
+      DATABASE_URL: ${DATABASE_URL}
+      RATELIMIT_STORAGE_URI: ${KYC_RATELIMIT_STORAGE_URI}
+      JWT_SECRET: ${JWT_SECRET}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+      KYC_BUCKET: ${KYC_BUCKET}
+      BVN_LOOKUP_URL: ${BVN_LOOKUP_URL}
+      ENVIRONMENT: ${ENVIRONMENT}
     depends_on:
       - postgres
       - redis
