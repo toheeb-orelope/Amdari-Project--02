@@ -85,4 +85,8 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(host="0.0.0.0", port=8001, debug=app.config["ENVIRONMENT"] == "development")
+    app.run(
+        host=os.environ.get("FLASK_RUN_HOST", "127.0.0.1"),
+        port=8001,
+        debug=app.config["ENVIRONMENT"] == "development",
+    )

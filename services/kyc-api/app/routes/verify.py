@@ -226,16 +226,21 @@ def lookup_kyc():
     try:
         connection = get_connection()
         cursor = connection.cursor()
-        # The selected column is server-controlled; the identifier remains parameterized.
-        query = (
-            "SELECT id, verification_status, submitted_at "
-            f"FROM kyc_records WHERE user_id = %s AND {field_name} = %s "
-            "ORDER BY id"
-        )
-        cursor.execute(
-            query,
-            (request.current_user_id, identifier),
-        )
+        # Use explicit queries so the identifier column is never interpolated into SQL.
+        if field_name == "bvn":
+            cursor.execute(
+                "SELECT id, verification_status, submitted_at "
+                "FROM kyc_records WHERE user_id = %s AND bvn = %s "
+                "ORDER BY id",
+                (request.current_user_id, identifier),
+            )
+        else:
+            cursor.execute(
+                "SELECT id, verification_status, submitted_at "
+                "FROM kyc_records WHERE user_id = %s AND nin = %s "
+                "ORDER BY id",
+                (request.current_user_id, identifier),
+            )
         records = cursor.fetchall()
         return jsonify([dict(record) for record in records])
     except Exception:

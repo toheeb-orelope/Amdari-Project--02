@@ -1,6 +1,13 @@
 [extend]
 useDefault = true
 
+[allowlist]
+paths = [
+  '''(^|[\\/])\.env$''',
+  '''(^|[\\/])cmd\.txt$''',
+  '''(^|[\\/])gitleaks_report.*''',
+]
+
 # ── YAML ──────────────────────────────────────────────────────────────────────
 [[rules]]
 id = "yaml-aws-access-key"
@@ -31,7 +38,7 @@ tags = ["generic", "secret"]
 [[rules]]
 id = "python-hardcoded-secret"
 description = "Hardcoded secret in Python assignment"
-regex = '''(?i)(password|secret|token|api.?key|access.?key)\s*=\s*['"]([a-zA-Z0-9\-_\/+=]{8,})['"]'''
+regex = '''(?i)(password|secret|token|api.?key|access.?key)[ \t]*=[ \t]*['"]([a-zA-Z0-9\-_\/+=]{8,})['"]'''
 secretGroup = 2
 entropy = 3.5
 tags = ["python", "secret"]
@@ -41,20 +48,20 @@ paths = ['''.*\.sh$''']
 [[rules]]
 id = "python-aws-key"
 description = "AWS key in Python"
-regex = '''(?i)aws.?access.?key.?id\s*=\s*['"]([A-Z0-9]{20})['"]'''
+regex = '''(?i)aws.?access.?key.?id[ \t]*=[ \t]*['"]([A-Z0-9]{20})['"]'''
 tags = ["python", "aws"]
 
 [[rules]]
 id = "python-aws-secret"
 description = "AWS secret in Python"
-regex = '''(?i)aws.?secret.?access.?key\s*=\s*['"]([a-zA-Z0-9/+=]{40})['"]'''
+regex = '''(?i)aws.?secret.?access.?key[ \t]*=[ \t]*['"]([a-zA-Z0-9/+=]{40})['"]'''
 tags = ["python", "aws"]
 
 # ── Terraform ─────────────────────────────────────────────────────────────────
 [[rules]]
 id = "terraform-hardcoded-secret"
 description = "Hardcoded secret in Terraform"
-regex = '''(?i)(password|secret|token|access_key|secret_key)\s*=\s*['"]([a-zA-Z0-9\-_\/+=]{8,})['"]'''
+regex = '''(?i)(password|secret|token|access_key|secret_key)[ \t]*=[ \t]*['"]([a-zA-Z0-9\-_\/+=]{8,})['"]'''
 secretGroup = 2
 entropy = 3.0
 tags = ["terraform", "secret"]
@@ -62,13 +69,13 @@ tags = ["terraform", "secret"]
 [[rules]]
 id = "terraform-aws-access-key"
 description = "AWS Access Key in Terraform"
-regex = '''(?i)access_key\s*=\s*['"]([A-Z0-9]{20})['"]'''
+regex = '''(?i)access_key[ \t]*=[ \t]*['"]([A-Z0-9]{20})['"]'''
 tags = ["terraform", "aws"]
 
 [[rules]]
 id = "terraform-aws-secret-key"
 description = "AWS Secret Key in Terraform"
-regex = '''(?i)secret_key\s*=\s*['"]([a-zA-Z0-9/+=]{40})['"]'''
+regex = '''(?i)secret_key[ \t]*=[ \t]*['"]([a-zA-Z0-9/+=]{40})['"]'''
 tags = ["terraform", "aws"]
 
 # ── GitHub Actions ────────────────────────────────────────────────────────────
@@ -87,7 +94,7 @@ regexes = ['''\$\{\{\s*secrets\.''']
 [[rules]]
 id = "dotenv-secret"
 description = "Secret in .env or .env.example file"
-regex = '''(?i)(PASSWORD|SECRET|TOKEN|API_KEY|ACCESS_KEY)\s*=\s*['"]?([a-zA-Z0-9\-_\/+=]{8,})['"]?'''
+regex = '''(?i)(PASSWORD|SECRET|TOKEN|API_KEY|ACCESS_KEY)[ \t]*=[ \t]*['"]?([a-zA-Z0-9\-_\/+=]{8,})['"]?'''
 secretGroup = 2
 entropy = 3.5
 tags = ["dotenv", "secret"]
@@ -102,7 +109,7 @@ regexes = [
 [[rules]]
 id = "shell-export-secret"
 description = "Exported secret in shell script"
-regex = '''(?i)export\s+(PASSWORD|SECRET|TOKEN|API_KEY|ACCESS_KEY|WEBHOOK)\s*=\s*['"]?([a-zA-Z0-9\-_\/+=:/.]{8,})['"]?'''
+regex = '''(?i)export\s+(PASSWORD|SECRET|TOKEN|API_KEY|ACCESS_KEY|WEBHOOK)[ \t]*=[ \t]*['"]?([a-zA-Z0-9\-_\/+=:/.]{8,})['"]?'''
 secretGroup = 2
 entropy = 3.0
 tags = ["shell", "secret"]

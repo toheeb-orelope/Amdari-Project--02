@@ -81,3 +81,14 @@ Almost none of the above. We shipped:
 The gap between intent and reality is the engagement.
 
 — Femi (last edited 2026-02-14)
+
+
+Owner = toheeb
+Environment = dev | staging | prod
+Service = payments-api | kyc-api | shared
+CostCenter = lab | security-training | engineering
+Project = sentinelpay
+ManagedBy = terraform
+Repository = Amdari-Project--02
+DataClassification = internal | confidential
+Criticality = low | medium | high

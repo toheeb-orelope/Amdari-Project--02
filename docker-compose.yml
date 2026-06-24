@@ -10,21 +10,35 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /run
+      - /var/lib/postgresql
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./seed/init.sql:/docker-entrypoint-initdb.d/init.sql
+    security_opt:
+      - "no-new-privileges:true"
 
   redis:
     image: redis:7-alpine
     container_name: sentinelpay-redis
+    read_only: true
+    tmpfs:
+      - /tmp
     ports:
       - "6379:6379"
+    security_opt:
+      - "no-new-privileges:true"
 
   payments-api:
     build: ./services/payments-api
     container_name: sentinelpay-payments
     ports:
       - "18001:8001"
+    security_opt:
+      - "no-new-privileges:true"
     environment:
       DATABASE_URL: ${DATABASE_URL}
       JWT_SECRET: ${JWT_SECRET}
@@ -45,6 +59,8 @@ services:
     container_name: sentinelpay-kyc
     ports:
       - "18002:8002"
+    security_opt:
+      - "no-new-privileges:true"
     environment:
       DATABASE_URL: ${DATABASE_URL}
       RATELIMIT_STORAGE_URI: ${KYC_RATELIMIT_STORAGE_URI}

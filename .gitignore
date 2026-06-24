@@ -11,6 +11,7 @@ venv/
 htmlcov/
 node_modules/
 *.log
+.env.*
 
 sbom.json
 cmd.txt
@@ -20,3 +21,23 @@ bandit_report.json
 semgrep_full*
 SBOM-*.json
 delet*
+
+
+# Terraform local variable files
+*.tfvars
+*.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Terraform working directories and plans
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+infra/bootstrap/output.txt

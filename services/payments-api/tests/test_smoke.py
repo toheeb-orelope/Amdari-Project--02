@@ -1,11 +1,12 @@
 """Smoke tests for payments-api startup and security boundaries."""
 
 import os
+import secrets
 import unittest
 
 os.environ["ENVIRONMENT"] = "testing"
-os.environ["JWT_SECRET"] = "test-jwt-secret-with-at-least-32-bytes"
-os.environ["SECRET_KEY"] = "test-session-secret-with-at-least-32-bytes"
+os.environ["JWT_SECRET"] = secrets.token_urlsafe(48)
+os.environ["SECRET_KEY"] = secrets.token_urlsafe(48)
 os.environ["RATELIMIT_STORAGE_URI"] = "memory://"
 
 from app.main import create_app

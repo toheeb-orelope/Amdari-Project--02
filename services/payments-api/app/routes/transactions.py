@@ -71,32 +71,43 @@ def search_transactions():
         search_pattern,
         search_pattern,
     ]
-    account_filter = ""
-    if account_id is not None:
-        account_filter = " AND t.account_id = %s"
-        parameters.append(account_id)
-    parameters.append(SEARCH_RESULT_LIMIT)
 
     conn = None
     cur = None
     try:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute(
-            "SELECT t.id, t.account_id, t.reference, t.amount, t.currency, "
-            "t.direction, t.counterparty, t.description, t.status, t.created_at "
-            "FROM transactions AS t "
-            # Join ownership into the query so other users' rows cannot match.
-            "INNER JOIN accounts AS a ON a.id = t.account_id "
-            "WHERE a.user_id = %s "
-            "AND (t.reference ILIKE %s "
-            "OR t.counterparty ILIKE %s "
-            "OR t.description ILIKE %s)"
-            f"{account_filter} "
-            "ORDER BY t.created_at DESC, t.id DESC "
-            "LIMIT %s",
-            tuple(parameters),
-        )
+        if account_id is None:
+            cur.execute(
+                "SELECT t.id, t.account_id, t.reference, t.amount, t.currency, "
+                "t.direction, t.counterparty, t.description, t.status, t.created_at "
+                "FROM transactions AS t "
+                # Join ownership into the query so other users' rows cannot match.
+                "INNER JOIN accounts AS a ON a.id = t.account_id "
+                "WHERE a.user_id = %s "
+                "AND (t.reference ILIKE %s "
+                "OR t.counterparty ILIKE %s "
+                "OR t.description ILIKE %s) "
+                "ORDER BY t.created_at DESC, t.id DESC "
+                "LIMIT %s",
+                tuple(parameters + [SEARCH_RESULT_LIMIT]),
+            )
+        else:
+            cur.execute(
+                "SELECT t.id, t.account_id, t.reference, t.amount, t.currency, "
+                "t.direction, t.counterparty, t.description, t.status, t.created_at "
+                "FROM transactions AS t "
+                # Join ownership into the query so other users' rows cannot match.
+                "INNER JOIN accounts AS a ON a.id = t.account_id "
+                "WHERE a.user_id = %s "
+                "AND (t.reference ILIKE %s "
+                "OR t.counterparty ILIKE %s "
+                "OR t.description ILIKE %s) "
+                "AND t.account_id = %s "
+                "ORDER BY t.created_at DESC, t.id DESC "
+                "LIMIT %s",
+                tuple(parameters + [account_id, SEARCH_RESULT_LIMIT]),
+            )
         rows = cur.fetchall()
         return jsonify([dict(row) for row in rows])
     except Exception:

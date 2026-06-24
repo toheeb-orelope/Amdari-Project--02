@@ -111,19 +111,22 @@ def find_existing_transaction(
     require_owner=True,
 ):
     """Find an idempotent replay within the caller's permitted scope."""
-    ownership_filter = ""
-    parameters = [reference, account_id, direction]
     if require_owner:
-        ownership_filter = " AND a.user_id = %s"
-        parameters.append(request.current_user_id)
-    cur.execute(
-        "SELECT t.reference FROM transactions AS t "
-        "INNER JOIN accounts AS a ON a.id = t.account_id "
-        "WHERE t.reference = %s AND t.account_id = %s "
-        "AND t.direction = %s"
-        f"{ownership_filter}",
-        tuple(parameters),
-    )
+        cur.execute(
+            "SELECT t.reference FROM transactions AS t "
+            "INNER JOIN accounts AS a ON a.id = t.account_id "
+            "WHERE t.reference = %s AND t.account_id = %s "
+            "AND t.direction = %s AND a.user_id = %s",
+            (reference, account_id, direction, request.current_user_id),
+        )
+    else:
+        cur.execute(
+            "SELECT t.reference FROM transactions AS t "
+            "INNER JOIN accounts AS a ON a.id = t.account_id "
+            "WHERE t.reference = %s AND t.account_id = %s "
+            "AND t.direction = %s",
+            (reference, account_id, direction),
+        )
     return cur.fetchone()
 
 
@@ -139,17 +142,18 @@ def is_credit_operator(cur):
 
 def account_error_response(cur, account_id, amount=None, require_owner=True):
     """Return a safe reason when an atomic balance update changes no row."""
-    ownership_filter = ""
-    parameters = [account_id]
     if require_owner:
-        ownership_filter = " AND user_id = %s"
-        parameters.append(request.current_user_id)
-    cur.execute(
-        "SELECT balance, status FROM accounts "
-        "WHERE id = %s"
-        f"{ownership_filter}",
-        tuple(parameters),
-    )
+        cur.execute(
+            "SELECT balance, status FROM accounts "
+            "WHERE id = %s AND user_id = %s",
+            (account_id, request.current_user_id),
+        )
+    else:
+        cur.execute(
+            "SELECT balance, status FROM accounts "
+            "WHERE id = %s",
+            (account_id,),
+        )
     account = cur.fetchone()
     if not account:
         return jsonify({"error": "account not found"}), 404
