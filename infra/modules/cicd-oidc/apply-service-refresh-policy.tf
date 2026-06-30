@@ -4,6 +4,7 @@ data "aws_iam_policy_document" "terraform_apply_service_refresh" {
     effect = "Allow"
 
     actions = [
+      "config:DescribeRetentionConfigurations",
       "ec2:DescribeAddresses",
       "ec2:DescribeFlowLogs",
       "ec2:DescribeInternetGateways",
@@ -25,8 +26,10 @@ data "aws_iam_policy_document" "terraform_apply_service_refresh" {
       "events:TagResource",
       "events:UntagResource",
       "kms:GetKeyRotationStatus",
+      "kms:ListResourceTags",
       "rds:DescribeDBInstances",
       "rds:DescribeDBParameterGroups",
+      "rds:DescribeDBParameters",
       "rds:DescribeDBSubnetGroups",
       "rds:ListTagsForResource",
       "signer:GetSigningProfile",
@@ -34,6 +37,7 @@ data "aws_iam_policy_document" "terraform_apply_service_refresh" {
       "signer:ListSigningProfiles",
       "sns:GetTopicAttributes",
       "sns:ListSubscriptionsByTopic",
+      "sns:ListTagsForResource",
       "sns:UntagResource"
     ]
 
