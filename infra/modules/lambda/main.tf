@@ -119,8 +119,8 @@ locals {
   name_prefix         = "${var.project}-${var.environment}"
   signer_profile_name = replace("${var.project}_${var.environment}_lambda", "-", "_")
 
-  create_containment_lambda = var.containment_lambda_role_arn != null && var.containment_package_path != null
-  create_rotation_lambda    = var.rotation_lambda_role_arn != null && var.rotation_package_path != null
+  create_containment_lambda = var.containment_package_path != null
+  create_rotation_lambda    = var.rotation_package_path != null
 }
 
 data "aws_caller_identity" "current" {}
