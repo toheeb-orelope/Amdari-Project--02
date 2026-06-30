@@ -181,11 +181,30 @@ jobs:
       - name: Keyless sign images and attest SBOMs
         env:
           COSIGN_EXPERIMENTAL: 'true'
+          COSIGN_YES: 'true'
         run: |
-          cosign sign --yes "${{ steps.images.outputs.payments_image }}"
-          cosign sign --yes "${{ steps.images.outputs.kyc_image }}"
-          cosign attest --yes --predicate payments-api-sbom.spdx.json --type spdxjson "${{ steps.images.outputs.payments_image }}"
-          cosign attest --yes --predicate kyc-api-sbom.spdx.json --type spdxjson "${{ steps.images.outputs.kyc_image }}"
+          retry() {
+            local attempts=3
+            local delay=20
+            local n=1
+
+            until "$@"; do
+              if [ "$n" -ge "$attempts" ]; then
+                echo "Command failed after $attempts attempts: $*" >&2
+                return 1
+              fi
+
+              echo "Command failed. Retrying in ${delay}s ($n/${attempts}): $*" >&2
+              sleep "$delay"
+              n=$((n + 1))
+              delay=$((delay * 2))
+            done
+          }
+
+          retry cosign sign "${{ steps.images.outputs.payments_image }}"
+          retry cosign sign "${{ steps.images.outputs.kyc_image }}"
+          retry cosign attest --predicate payments-api-sbom.spdx.json --type spdxjson "${{ steps.images.outputs.payments_image }}"
+          retry cosign attest --predicate kyc-api-sbom.spdx.json --type spdxjson "${{ steps.images.outputs.kyc_image }}"
       - uses: actions/upload-artifact@v4
         with:
           name: image-sboms
