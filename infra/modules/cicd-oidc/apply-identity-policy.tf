@@ -24,6 +24,7 @@ data "aws_iam_policy_document" "terraform_apply_identity_management" {
       "iam:GetRole",
       "iam:GetRolePolicy",
       "iam:GetUser",
+      "iam:GetUserPolicy",
       "iam:ListAccessKeys",
       "iam:ListAttachedRolePolicies",
       "iam:ListGroupsForUser",
@@ -71,6 +72,7 @@ data "aws_iam_policy_document" "terraform_apply_identity_management" {
         "config.amazonaws.com",
         "elasticloadbalancing.amazonaws.com",
         "ecs.amazonaws.com",
+        "elasticache.amazonaws.com",
         "guardduty.amazonaws.com",
         "securityhub.amazonaws.com"
       ]
@@ -92,3 +94,4 @@ resource "aws_iam_role_policy_attachment" "terraform_apply_identity_management" 
   role       = aws_iam_role.terraform_apply.name
   policy_arn = aws_iam_policy.terraform_apply_identity_management.arn
 }
+

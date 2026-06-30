@@ -106,7 +106,6 @@ resource "aws_kms_key" "this" {
   })
 }
 
-
 data "aws_iam_policy_document" "key_policy" {
   for_each = local.key_purposes
 
@@ -146,7 +145,7 @@ data "aws_iam_policy_document" "key_policy" {
   }
 
   statement {
-    sid    = "AllowServiceUseViaRegionalServices"
+    sid    = "AllowAccountPrincipalsServiceUse"
     effect = "Allow"
 
     principals {
@@ -186,6 +185,43 @@ data "aws_iam_policy_document" "key_policy" {
       values   = [data.aws_caller_identity.current.account_id]
     }
   }
+
+  statement {
+    sid    = "AllowAwsServicesDirectUse"
+    effect = "Allow"
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "cloudtrail.amazonaws.com",
+        "config.amazonaws.com",
+        "delivery.logs.amazonaws.com",
+        "logs.${data.aws_region.current.region}.amazonaws.com",
+        "s3.amazonaws.com",
+        "secretsmanager.amazonaws.com",
+        "rds.amazonaws.com",
+        "elasticache.amazonaws.com"
+      ]
+    }
+
+    actions = [
+      "kms:Decrypt",
+      "kms:DescribeKey",
+      "kms:Encrypt",
+      "kms:GenerateDataKey",
+      "kms:GenerateDataKeyWithoutPlaintext",
+      "kms:ReEncryptFrom",
+      "kms:ReEncryptTo"
+    ]
+
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+  }
 }
 
 resource "aws_kms_key_policy" "this" {
@@ -194,6 +230,7 @@ resource "aws_kms_key_policy" "this" {
   key_id = each.value.id
   policy = data.aws_iam_policy_document.key_policy[each.key].json
 }
+
 resource "aws_kms_alias" "this" {
   for_each = aws_kms_key.this
 
@@ -204,11 +241,13 @@ resource "aws_kms_alias" "this" {
 output "key_ids" {
   description = "KMS key IDs by purpose."
   value       = { for purpose, key in aws_kms_key.this : purpose => key.key_id }
+  depends_on  = [aws_kms_key_policy.this]
 }
 
 output "key_arns" {
   description = "KMS key ARNs by purpose."
   value       = { for purpose, key in aws_kms_key.this : purpose => key.arn }
+  depends_on  = [aws_kms_key_policy.this]
 }
 
 output "alias_names" {

@@ -49,7 +49,7 @@ variable "master_username" {
 
 variable "engine_version" {
   type    = string
-  default = "15.10"
+  default = "15"
 }
 
 variable "instance_class" {
@@ -280,3 +280,4 @@ output "db_name" {
 output "master_user_secret_arn" {
   value = aws_db_instance.main.master_user_secret[0].secret_arn
 }
+
