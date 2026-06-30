@@ -50,10 +50,13 @@ jobs:
           pip install -r services/payments-api/requirements.txt
           pip install -r services/kyc-api/requirements.txt
           pip install pytest bandit semgrep
-      - name: Run tests
-        run: |
-          python -m pytest services/payments-api/tests
-          python -m pytest services/kyc-api/tests
+      - name: Run payments-api tests
+        working-directory: services/payments-api
+        run: python -m pytest tests
+
+      - name: Run kyc-api tests
+        working-directory: services/kyc-api
+        run: python -m pytest tests
       - name: Bandit
         run: bandit -r services -ll
       - name: Semgrep
