@@ -64,6 +64,43 @@ variable "waf_web_acl_scope" {
   default = "REGIONAL"
 }
 
+
+variable "enable_alb_5xx_alarm" {
+  description = "Create the ALB 5XX CloudWatch alarm. Set false when no ALB is deployed."
+  type        = bool
+  default     = true
+}
+
+variable "enable_payments_cpu_alarm" {
+  description = "Create the payments-api ECS CPU CloudWatch alarm."
+  type        = bool
+  default     = true
+}
+
+variable "enable_kyc_cpu_alarm" {
+  description = "Create the kyc-api ECS CPU CloudWatch alarm."
+  type        = bool
+  default     = true
+}
+
+variable "enable_rds_cpu_alarm" {
+  description = "Create the RDS CPU CloudWatch alarm."
+  type        = bool
+  default     = true
+}
+
+variable "enable_redis_cpu_alarm" {
+  description = "Create the Redis CPU dashboard widget when Redis is deployed."
+  type        = bool
+  default     = true
+}
+
+variable "enable_lambda_error_alarm" {
+  description = "Create the GuardDuty containment Lambda error CloudWatch alarm."
+  type        = bool
+  default     = true
+}
+
 variable "alb_5xx_threshold" {
   type    = number
   default = 10
@@ -151,7 +188,7 @@ locals {
         markdown = "# ${local.name_prefix} operational and security dashboard\nALB, ECS, RDS, Redis, Lambda, and WAF signals."
       }
     }],
-    var.alb_arn_suffix == null ? [] : [{
+    var.enable_alb_5xx_alarm ? [{
       type   = "metric"
       x      = 0
       y      = 2
@@ -164,8 +201,8 @@ locals {
         stat    = "Sum"
         metrics = [["AWS/ApplicationELB", "HTTPCode_ELB_5XX_Count", "LoadBalancer", var.alb_arn_suffix]]
       }
-    }],
-    var.ecs_cluster_name == null || var.payments_service_name == null ? [] : [{
+    }] : [],
+    var.enable_payments_cpu_alarm ? [{
       type   = "metric"
       x      = 12
       y      = 2
@@ -178,8 +215,8 @@ locals {
         stat    = "Average"
         metrics = [["AWS/ECS", "CPUUtilization", "ClusterName", var.ecs_cluster_name, "ServiceName", var.payments_service_name]]
       }
-    }],
-    var.ecs_cluster_name == null || var.kyc_service_name == null ? [] : [{
+    }] : [],
+    var.enable_kyc_cpu_alarm ? [{
       type   = "metric"
       x      = 18
       y      = 2
@@ -192,8 +229,8 @@ locals {
         stat    = "Average"
         metrics = [["AWS/ECS", "CPUUtilization", "ClusterName", var.ecs_cluster_name, "ServiceName", var.kyc_service_name]]
       }
-    }],
-    var.rds_instance_id == null ? [] : [{
+    }] : [],
+    var.enable_rds_cpu_alarm ? [{
       type   = "metric"
       x      = 0
       y      = 8
@@ -206,8 +243,8 @@ locals {
         stat    = "Average"
         metrics = [["AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", var.rds_instance_id]]
       }
-    }],
-    var.redis_replication_group_id == null ? [] : [{
+    }] : [],
+    var.enable_redis_cpu_alarm ? [{
       type   = "metric"
       x      = 8
       y      = 8
@@ -220,8 +257,8 @@ locals {
         stat    = "Average"
         metrics = [["AWS/ElastiCache", "CPUUtilization", "ReplicationGroupId", var.redis_replication_group_id]]
       }
-    }],
-    var.guardduty_containment_lambda_function_name == null ? [] : [{
+    }] : [],
+    var.enable_lambda_error_alarm ? [{
       type   = "metric"
       x      = 16
       y      = 8
@@ -234,7 +271,7 @@ locals {
         stat    = "Sum"
         metrics = [["AWS/Lambda", "Errors", "FunctionName", var.guardduty_containment_lambda_function_name]]
       }
-    }]
+    }] : []
   )
 }
 
@@ -256,7 +293,7 @@ resource "aws_sns_topic_subscription" "email" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "alb_5xx" {
-  count = var.alb_arn_suffix == null ? 0 : 1
+  count = var.enable_alb_5xx_alarm ? 1 : 0
 
   alarm_name          = "${local.name_prefix}-alb-5xx-high"
   alarm_description   = "ALB generated elevated 5XX responses."
@@ -279,7 +316,7 @@ resource "aws_cloudwatch_metric_alarm" "alb_5xx" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "payments_cpu" {
-  count = var.ecs_cluster_name == null || var.payments_service_name == null ? 0 : 1
+  count = var.enable_payments_cpu_alarm ? 1 : 0
 
   alarm_name          = "${local.name_prefix}-payments-cpu-high"
   alarm_description   = "payments-api ECS service CPU is high."
@@ -303,7 +340,7 @@ resource "aws_cloudwatch_metric_alarm" "payments_cpu" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "kyc_cpu" {
-  count = var.ecs_cluster_name == null || var.kyc_service_name == null ? 0 : 1
+  count = var.enable_kyc_cpu_alarm ? 1 : 0
 
   alarm_name          = "${local.name_prefix}-kyc-cpu-high"
   alarm_description   = "kyc-api ECS service CPU is high."
@@ -327,7 +364,7 @@ resource "aws_cloudwatch_metric_alarm" "kyc_cpu" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "rds_cpu" {
-  count = var.rds_instance_id == null ? 0 : 1
+  count = var.enable_rds_cpu_alarm ? 1 : 0
 
   alarm_name          = "${local.name_prefix}-rds-cpu-high"
   alarm_description   = "RDS CPU utilization is high."
@@ -350,7 +387,7 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
-  count = var.guardduty_containment_lambda_function_name == null ? 0 : 1
+  count = var.enable_lambda_error_alarm ? 1 : 0
 
   alarm_name          = "${local.name_prefix}-guardduty-containment-lambda-errors"
   alarm_description   = "GuardDuty containment Lambda has errors."
