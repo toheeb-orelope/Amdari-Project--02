@@ -410,7 +410,8 @@ module "cicd_oidc" {
     "repo:${var.github_owner}/${var.github_repo}:ref:refs/heads/${var.github_dev_branch}"
   ]
   apply_subjects = [
-    "repo:${var.github_owner}/${var.github_repo}:ref:refs/heads/${var.github_dev_branch}"
+    "repo:${var.github_owner}/${var.github_repo}:ref:refs/heads/${var.github_dev_branch}",
+    "repo:${var.github_owner}/${var.github_repo}:environment:${var.environment}"
   ]
   ecr_push_subjects = [
     "repo:${var.github_owner}/${var.github_repo}:ref:refs/heads/${var.github_dev_branch}"

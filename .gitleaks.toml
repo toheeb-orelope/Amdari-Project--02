@@ -7,6 +7,9 @@ paths = [
   '''(^|[\\/])cmd\.txt$''',
   '''(^|[\\/])gitleaks_report.*''',
 ]
+regexes = [
+  '''REDACTED_LOCAL_JWT_PLACEHOLDER''',
+]
 
 # ── YAML ──────────────────────────────────────────────────────────────────────
 [[rules]]
