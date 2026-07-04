@@ -15,7 +15,7 @@ Run this locally only when the GitHub Terraform apply role or KMS key policies c
 
 ```powershell
 aws sts get-caller-identity
-$env:TF_VAR_redis_auth_token = "YOUR_DEV_REDIS_TOKEN"
+$env:TF_VAR_redis_auth_token =
 
 terraform -chdir=infra/envs/dev init -reconfigure
 terraform -chdir=infra/envs/dev apply -target="module.cicd_oidc" -target="module.kms"
