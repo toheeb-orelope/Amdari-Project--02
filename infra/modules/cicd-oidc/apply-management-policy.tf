@@ -210,6 +210,7 @@ data "aws_iam_policy_document" "terraform_apply_data_security" {
       "s3:GetAccelerateConfiguration",
       "s3:GetBucketCORS",
       "s3:GetBucketEncryption",
+      "s3:GetEncryptionConfiguration",
       "s3:GetBucketLifecycleConfiguration",
       "s3:GetBucketLocation",
       "s3:GetBucketLogging",
@@ -308,6 +309,7 @@ resource "aws_iam_role_policy_attachment" "terraform_apply_data_security" {
   role       = aws_iam_role.terraform_apply.name
   policy_arn = aws_iam_policy.terraform_apply_data_security.arn
 }
+
 
 
 
