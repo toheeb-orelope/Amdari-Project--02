@@ -89,6 +89,8 @@ data "aws_iam_policy_document" "terraform_apply_service_refresh" {
       "rds:DescribeDBSubnetGroups",
       "rds:ListTagsForResource",
       "s3:GetBucketAcl",
+      "s3:GetAccelerateConfiguration",
+      "s3:GetBucketCORS",
       "s3:GetBucketEncryption",
       "s3:GetBucketLifecycleConfiguration",
       "s3:GetBucketLocation",
@@ -97,8 +99,10 @@ data "aws_iam_policy_document" "terraform_apply_service_refresh" {
       "s3:GetBucketOwnershipControls",
       "s3:GetBucketPolicy",
       "s3:GetBucketPublicAccessBlock",
+      "s3:GetBucketRequestPayment",
       "s3:GetBucketTagging",
       "s3:GetBucketVersioning",
+      "s3:GetBucketWebsite",
       "s3:GetLifecycleConfiguration",
       "s3:GetObjectLockConfiguration",
       "s3:GetReplicationConfiguration",
@@ -144,4 +148,5 @@ resource "aws_iam_role_policy_attachment" "terraform_apply_service_refresh" {
   role       = aws_iam_role.terraform_apply.name
   policy_arn = aws_iam_policy.terraform_apply_service_refresh.arn
 }
+
 
