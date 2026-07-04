@@ -1,0 +1,259 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200" role="img" aria-labelledby="title desc">
+  <title id="title">SentinelPay End-to-End Security Architecture</title>
+  <desc id="desc">High-level security architecture showing application services, DevSecOps pipeline, security gates, AWS edge, application, data, detection, monitoring, and CI/CD OIDC flow.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f7f9fc; }
+      .title { font: 800 38px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+      .subtitle { font: italic 20px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+      .section-title { font: 800 15px Inter, Segoe UI, Arial, sans-serif; fill: #1e293b; letter-spacing: .4px; }
+      .lane-label { font: 800 14px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .small { font: 12px Inter, Segoe UI, Arial, sans-serif; fill: #475569; }
+      .tiny { font: 10.5px Inter, Segoe UI, Arial, sans-serif; fill: #64748b; }
+      .box-title { font: 700 13px Inter, Segoe UI, Arial, sans-serif; fill: #0f172a; }
+      .box-text { font: 11px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .pill-text { font: 10px Inter, Segoe UI, Arial, sans-serif; fill: #334155; }
+      .panel { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.4; rx: 16; }
+      .panel-blue { fill: #eff6ff; stroke: #93c5fd; stroke-width: 1.6; rx: 16; }
+      .panel-purple { fill: #f5f3ff; stroke: #c4b5fd; stroke-width: 1.6; rx: 16; }
+      .panel-green { fill: #ecfdf5; stroke: #86efac; stroke-width: 1.6; rx: 16; }
+      .panel-orange { fill: #fff7ed; stroke: #fdba74; stroke-width: 1.6; rx: 16; }
+      .panel-red { fill: #fef2f2; stroke: #fca5a5; stroke-width: 1.6; rx: 16; }
+      .card { fill: #ffffff; stroke: #dbe3ef; stroke-width: 1.2; rx: 12; filter: url(#shadow); }
+      .card-soft { fill: #fbfdff; stroke: #dbe3ef; stroke-width: 1.1; rx: 10; }
+      .gate { fill: #fff7ed; stroke: #fb923c; stroke-width: 1.7; rx: 14; }
+      .pass { fill: #dcfce7; stroke: #22c55e; stroke-width: 1.2; rx: 10; }
+      .fail { fill: #fee2e2; stroke: #ef4444; stroke-width: 1.2; rx: 10; }
+      .warn { fill: #fef3c7; stroke: #f59e0b; stroke-width: 1.2; rx: 10; }
+      .arrow { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .arrow-blue { stroke: #2563eb; stroke-width: 2.2; fill: none; marker-end: url(#arrow-blue); }
+      .arrow-green { stroke: #16a34a; stroke-width: 2.2; fill: none; marker-end: url(#arrow-green); }
+      .arrow-orange { stroke: #ea580c; stroke-width: 2.2; fill: none; marker-end: url(#arrow-orange); }
+      .dashed { stroke-dasharray: 7 6; }
+      .icon { font: 22px Inter, Segoe UI Emoji, sans-serif; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#ea580c"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1800" height="1200"/>
+
+  <text class="title" x="900" y="52" text-anchor="middle">SentinelPay End-to-End Security Architecture</text>
+  <text class="subtitle" x="900" y="82" text-anchor="middle">From vulnerable services to secure AWS deployment: design, build, gate, deploy, monitor, and respond</text>
+
+  <!-- 1 Vulnerable app -->
+  <rect class="panel-red" x="30" y="130" width="210" height="430"/>
+  <text class="section-title" x="135" y="158" text-anchor="middle">1. APPLICATION SCOPE</text>
+  <text class="small" x="135" y="180" text-anchor="middle">SentinelPay services</text>
+
+  <rect class="card" x="55" y="205" width="160" height="55"/>
+  <text class="icon" x="72" y="240">💳</text>
+  <text class="box-title" x="106" y="228">payments-api</text>
+  <text class="tiny" x="106" y="246">Flask transactions</text>
+
+  <rect class="card" x="55" y="276" width="160" height="55"/>
+  <text class="icon" x="72" y="311">🪪</text>
+  <text class="box-title" x="106" y="299">kyc-api</text>
+  <text class="tiny" x="106" y="317">Docs + identity checks</text>
+
+  <rect class="card" x="55" y="347" width="160" height="55"/>
+  <text class="icon" x="72" y="382">🐘</text>
+  <text class="box-title" x="106" y="370">PostgreSQL</text>
+  <text class="tiny" x="106" y="388">Accounts + payments</text>
+
+  <rect class="card" x="55" y="418" width="160" height="55"/>
+  <text class="icon" x="72" y="453">⚡</text>
+  <text class="box-title" x="106" y="441">Redis</text>
+  <text class="tiny" x="106" y="459">Sessions/idempotency</text>
+
+  <rect class="fail" x="55" y="492" width="160" height="42"/>
+  <text class="box-title" x="135" y="510" text-anchor="middle">Inherited risk</text>
+  <text class="tiny" x="135" y="526" text-anchor="middle">AppSec + CloudSec gaps</text>
+
+  <!-- Pipeline -->
+  <rect class="panel-purple" x="280" y="130" width="740" height="430"/>
+  <text class="section-title" x="650" y="158" text-anchor="middle">2. DEVSECOPS PIPELINE — SHIFT LEFT SECURITY</text>
+
+  <rect class="card" x="305" y="195" width="150" height="250"/>
+  <text class="lane-label" x="380" y="220" text-anchor="middle">Stage 1</text>
+  <text class="box-title" x="380" y="242" text-anchor="middle">Gitleaks</text>
+  <text class="tiny" x="380" y="262" text-anchor="middle">Secret scan</text>
+  <text class="box-text" x="325" y="300">• Working-tree scan</text>
+  <text class="box-text" x="325" y="318">• Blocks leaked keys</text>
+  <text class="box-text" x="325" y="336">• Protects git history</text>
+  <rect class="fail" x="325" y="370" width="110" height="38"/>
+  <text class="tiny" x="380" y="394" text-anchor="middle">Fail on secrets</text>
+
+  <rect class="card" x="475" y="195" width="150" height="250"/>
+  <text class="lane-label" x="550" y="220" text-anchor="middle">Stage 2</text>
+  <text class="box-title" x="550" y="242" text-anchor="middle">SAST + Quality</text>
+  <text class="tiny" x="550" y="262" text-anchor="middle">SonarQube / Bandit</text>
+  <text class="box-text" x="495" y="300">• Code smells</text>
+  <text class="box-text" x="495" y="318">• Python security</text>
+  <text class="box-text" x="495" y="336">• Quality gate</text>
+  <rect class="warn" x="495" y="370" width="110" height="38"/>
+  <text class="tiny" x="550" y="394" text-anchor="middle">Warn/block by env</text>
+
+  <rect class="card" x="645" y="195" width="150" height="250"/>
+  <text class="lane-label" x="720" y="220" text-anchor="middle">Stage 3</text>
+  <text class="box-title" x="720" y="242" text-anchor="middle">Trivy</text>
+  <text class="tiny" x="720" y="262" text-anchor="middle">Image + dependency scan</text>
+  <text class="box-text" x="665" y="300">• Container CVEs</text>
+  <text class="box-text" x="665" y="318">• Dependency risk</text>
+  <text class="box-text" x="665" y="336">• SBOM inputs</text>
+  <rect class="fail" x="665" y="370" width="110" height="38"/>
+  <text class="tiny" x="720" y="394" text-anchor="middle">Block critical</text>
+
+  <rect class="card" x="815" y="195" width="180" height="250"/>
+  <text class="lane-label" x="905" y="220" text-anchor="middle">Stage 4</text>
+  <text class="box-title" x="905" y="242" text-anchor="middle">IaC policy</text>
+  <text class="tiny" x="905" y="262" text-anchor="middle">Checkov + tfsec</text>
+  <text class="box-text" x="835" y="300">• Terraform controls</text>
+  <text class="box-text" x="835" y="318">• KMS/S3/WAF checks</text>
+  <text class="box-text" x="835" y="336">• Evidence exceptions</text>
+  <rect class="fail" x="850" y="370" width="110" height="38"/>
+  <text class="tiny" x="905" y="394" text-anchor="middle">Block policy fail</text>
+
+  <!-- Gate -->
+  <rect class="gate" x="1060" y="130" width="230" height="430"/>
+  <text class="section-title" x="1175" y="158" text-anchor="middle">3. SECURITY GATE</text>
+  <text class="small" x="1175" y="181" text-anchor="middle">Environment-aware decisions</text>
+
+  <rect class="card-soft" x="1088" y="220" width="174" height="140"/>
+  <text class="box-title" x="1175" y="244" text-anchor="middle">Gate policy</text>
+  <text class="box-text" x="1106" y="276">• Dev: softer gates</text>
+  <text class="box-text" x="1106" y="296">• Staging: blocking scans</text>
+  <text class="box-text" x="1106" y="316">• Prod: manual approval</text>
+  <text class="box-text" x="1106" y="336">• No long-lived AWS keys</text>
+
+  <rect class="pass" x="1088" y="405" width="174" height="55"/>
+  <text class="box-title" x="1175" y="427" text-anchor="middle">All checks pass</text>
+  <text class="tiny" x="1175" y="445" text-anchor="middle">Proceed to build/deploy</text>
+
+  <!-- Supply chain -->
+  <rect class="panel-blue" x="1330" y="130" width="420" height="430"/>
+  <text class="section-title" x="1540" y="158" text-anchor="middle">4. SUPPLY CHAIN SECURITY</text>
+
+  <rect class="card" x="1360" y="205" width="170" height="55"/>
+  <text class="icon" x="1378" y="240">🐳</text>
+  <text class="box-title" x="1415" y="229">Build images</text>
+  <text class="tiny" x="1415" y="247">payments + kyc</text>
+
+  <rect class="card" x="1360" y="280" width="170" height="55"/>
+  <text class="icon" x="1378" y="315">🛡️</text>
+  <text class="box-title" x="1415" y="304">Scan images</text>
+  <text class="tiny" x="1415" y="322">Trivy gates</text>
+
+  <rect class="card" x="1360" y="355" width="170" height="55"/>
+  <text class="icon" x="1378" y="390">✍️</text>
+  <text class="box-title" x="1415" y="379">Sign images</text>
+  <text class="tiny" x="1415" y="397">Cosign keyless</text>
+
+  <rect class="card" x="1560" y="280" width="160" height="55"/>
+  <text class="icon" x="1578" y="315">📄</text>
+  <text class="box-title" x="1615" y="304">Generate SBOM</text>
+  <text class="tiny" x="1615" y="322">SPDX/CycloneDX</text>
+
+  <rect class="card" x="1560" y="355" width="160" height="55"/>
+  <text class="icon" x="1578" y="390">🔏</text>
+  <text class="box-title" x="1615" y="379">AWS Signer</text>
+  <text class="tiny" x="1615" y="397">Lambda zip signing</text>
+
+  <!-- AWS deploy -->
+  <rect class="panel-green" x="680" y="625" width="1070" height="455"/>
+  <text class="section-title" x="1215" y="653" text-anchor="middle">5. AWS DEPLOYMENT — HARDENED RUNTIME</text>
+
+  <rect class="card" x="710" y="690" width="220" height="310"/>
+  <text class="box-title" x="820" y="716" text-anchor="middle">Edge plane</text>
+  <text class="box-text" x="735" y="752">• Route 53 + DNSSEC</text>
+  <text class="box-text" x="735" y="775">• AWS WAF managed rules</text>
+  <text class="box-text" x="735" y="798">• Payments rate-limit rule</text>
+  <text class="box-text" x="735" y="821">• ALB HTTPS termination</text>
+  <text class="box-text" x="735" y="844">• No public compute</text>
+
+  <rect class="card" x="960" y="690" width="220" height="310"/>
+  <text class="box-title" x="1070" y="716" text-anchor="middle">Application plane</text>
+  <text class="box-text" x="985" y="752">• ECS Fargate private tasks</text>
+  <text class="box-text" x="985" y="775">• Separate task roles</text>
+  <text class="box-text" x="985" y="798">• Private subnets, 2+ AZs</text>
+  <text class="box-text" x="985" y="821">• No SSH by default</text>
+  <text class="box-text" x="985" y="844">• Break-glass IAM path</text>
+
+  <rect class="card" x="1210" y="690" width="220" height="310"/>
+  <text class="box-title" x="1320" y="716" text-anchor="middle">Data and secrets</text>
+  <text class="box-text" x="1235" y="752">• RDS private PostgreSQL</text>
+  <text class="box-text" x="1235" y="775">• Redis TLS + AUTH</text>
+  <text class="box-text" x="1235" y="798">• KYC S3 Object Lock</text>
+  <text class="box-text" x="1235" y="821">• Secrets Manager</text>
+  <text class="box-text" x="1235" y="844">• CMK encryption</text>
+
+  <rect class="card" x="1460" y="690" width="250" height="310"/>
+  <text class="box-title" x="1585" y="716" text-anchor="middle">Detection and response</text>
+  <text class="box-text" x="1485" y="752">• GuardDuty protections</text>
+  <text class="box-text" x="1485" y="775">• CloudTrail validation</text>
+  <text class="box-text" x="1485" y="798">• Security Hub + CIS</text>
+  <text class="box-text" x="1485" y="821">• AWS Config pack</text>
+  <text class="box-text" x="1485" y="844">• EventBridge containment</text>
+  <text class="box-text" x="1485" y="867">• Honeytoken alarm</text>
+
+  <!-- Operations -->
+  <rect class="panel" x="30" y="625" width="600" height="455"/>
+  <text class="section-title" x="330" y="653" text-anchor="middle">6. OBSERVABILITY, OPERATIONS AND EVIDENCE</text>
+
+  <rect class="card" x="60" y="700" width="250" height="230"/>
+  <text class="box-title" x="185" y="727" text-anchor="middle">Monitoring</text>
+  <text class="box-text" x="85" y="765">• CloudWatch dashboards</text>
+  <text class="box-text" x="85" y="790">• Metric alarms</text>
+  <text class="box-text" x="85" y="815">• SNS notifications</text>
+  <text class="box-text" x="85" y="840">• ECS/RDS/Redis/Lambda</text>
+  <text class="box-text" x="85" y="865">• Honeytoken alerts</text>
+
+  <rect class="card" x="345" y="700" width="250" height="230"/>
+  <text class="box-title" x="470" y="727" text-anchor="middle">Audit evidence</text>
+  <text class="box-text" x="370" y="765">• CloudTrail org trail</text>
+  <text class="box-text" x="370" y="790">• Object Lock buckets</text>
+  <text class="box-text" x="370" y="815">• WAF/ALB/S3 logs</text>
+  <text class="box-text" x="370" y="840">• VPC Flow Logs</text>
+  <text class="box-text" x="370" y="865">• Config compliance</text>
+
+  <rect class="pass" x="80" y="970" width="470" height="60"/>
+  <text class="box-title" x="315" y="994" text-anchor="middle">Outcome</text>
+  <text class="small" x="315" y="1017" text-anchor="middle">Secure deployment path with evidence-backed controls and automated detection</text>
+
+  <!-- Main arrows -->
+  <path class="arrow" d="M240 345 C255 345 265 345 280 345"/>
+  <path class="arrow-blue" d="M1020 345 C1035 345 1045 345 1060 345"/>
+  <path class="arrow-orange" d="M1290 345 C1305 345 1315 345 1330 345"/>
+  <path class="arrow-green" d="M1540 560 C1540 585 1540 605 1540 625"/>
+  <path class="arrow-green" d="M1175 560 C1175 585 1175 605 1175 625"/>
+  <path class="arrow-blue dashed" d="M650 560 C650 650 630 760 630 850"/>
+  <path class="arrow-green dashed" d="M680 860 C660 860 650 860 630 860"/>
+
+  <!-- Legend -->
+  <rect class="card-soft" x="360" y="1120" width="1080" height="45"/>
+  <line x1="390" y1="1143" x2="455" y2="1143" class="arrow-blue"/>
+  <text class="pill-text" x="465" y="1147">CI/CD and gate flow</text>
+  <line x1="620" y1="1143" x2="685" y2="1143" class="arrow-green"/>
+  <text class="pill-text" x="695" y="1147">Deployment/runtime flow</text>
+  <line x1="865" y1="1143" x2="930" y2="1143" class="arrow-orange"/>
+  <text class="pill-text" x="940" y="1147">Supply-chain flow</text>
+  <rect class="fail" x="1110" y="1129" width="22" height="22"/>
+  <text class="pill-text" x="1140" y="1147">Fail/block</text>
+  <rect class="warn" x="1220" y="1129" width="22" height="22"/>
+  <text class="pill-text" x="1250" y="1147">Warn/manual review</text>
+  <rect class="pass" x="1370" y="1129" width="22" height="22"/>
+  <text class="pill-text" x="1400" y="1147">Pass</text>
+</svg>
