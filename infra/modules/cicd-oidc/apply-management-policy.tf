@@ -106,6 +106,8 @@ data "aws_iam_policy_document" "terraform_apply_data_security" {
       "elasticache:DeleteCacheParameterGroup",
       "elasticache:DeleteCacheSubnetGroup",
       "elasticache:DeleteReplicationGroup",
+      "elasticache:ModifyCacheParameterGroup",
+      "elasticache:ModifyCacheSubnetGroup",
       "elasticache:ModifyReplicationGroup",
       "events:DeleteRule",
       "events:DescribeRule",
@@ -123,12 +125,17 @@ data "aws_iam_policy_document" "terraform_apply_data_security" {
       "lambda:CreateFunction",
       "lambda:DeleteCodeSigningConfig",
       "lambda:DeleteFunction",
+      "lambda:DeleteFunctionConcurrency",
+      "lambda:DeleteFunctionEventInvokeConfig",
+      "lambda:PutFunctionConcurrency",
+      "lambda:PutFunctionEventInvokeConfig",
       "lambda:RemovePermission",
       "lambda:TagResource",
       "lambda:UntagResource",
       "lambda:UpdateCodeSigningConfig",
       "lambda:UpdateFunctionCode",
       "lambda:UpdateFunctionConfiguration",
+      "lambda:UpdateFunctionEventInvokeConfig",
       "logs:AssociateKmsKey",
       "logs:CreateLogDelivery",
       "logs:CreateLogGroup",
@@ -157,6 +164,7 @@ data "aws_iam_policy_document" "terraform_apply_data_security" {
       "secretsmanager:TagResource",
       "secretsmanager:UntagResource",
       "secretsmanager:UpdateSecret",
+      "securityhub:BatchDisableStandards",
       "securityhub:BatchEnableStandards",
       "securityhub:DisableSecurityHub",
       "securityhub:EnableSecurityHub",
@@ -169,10 +177,14 @@ data "aws_iam_policy_document" "terraform_apply_data_security" {
       "sns:CreateTopic",
       "sns:DeleteTopic",
       "sns:SetTopicAttributes",
+      "sns:Subscribe",
       "sns:TagResource",
+      "sns:Unsubscribe",
       "sqs:CreateQueue",
       "sqs:DeleteQueue",
       "sqs:SetQueueAttributes",
+      "sqs:TagQueue",
+      "sqs:UntagQueue",
       "wafv2:AssociateWebACL",
       "wafv2:CreateWebACL",
       "wafv2:DeleteLoggingConfiguration",
@@ -292,5 +304,6 @@ resource "aws_iam_role_policy_attachment" "terraform_apply_data_security" {
   role       = aws_iam_role.terraform_apply.name
   policy_arn = aws_iam_policy.terraform_apply_data_security.arn
 }
+
 
 

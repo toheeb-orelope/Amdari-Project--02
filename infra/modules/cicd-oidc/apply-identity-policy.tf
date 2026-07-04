@@ -17,6 +17,7 @@ data "aws_iam_policy_document" "terraform_apply_identity_management" {
       "iam:DeleteRole",
       "iam:DeleteRolePolicy",
       "iam:DeleteUser",
+      "iam:DeleteUserPolicy",
       "iam:DetachRolePolicy",
       "iam:GetAccessKeyLastUsed",
       "iam:GetPolicy",
@@ -56,6 +57,26 @@ data "aws_iam_policy_document" "terraform_apply_identity_management" {
   }
 
   statement {
+    sid    = "AllowReadServiceLinkedRolesUsedByManagedServices"
+    effect = "Allow"
+
+    actions = [
+      "iam:GetRole",
+      "iam:ListAttachedRolePolicies"
+    ]
+
+    resources = [
+      format("arn:%s:iam::%s:role/aws-service-role/config.amazonaws.com/*", data.aws_partition.current.partition, data.aws_caller_identity.current.account_id),
+      format("arn:%s:iam::%s:role/aws-service-role/elasticache.amazonaws.com/*", data.aws_partition.current.partition, data.aws_caller_identity.current.account_id),
+      format("arn:%s:iam::%s:role/aws-service-role/elasticloadbalancing.amazonaws.com/*", data.aws_partition.current.partition, data.aws_caller_identity.current.account_id),
+      format("arn:%s:iam::%s:role/aws-service-role/ecs.amazonaws.com/*", data.aws_partition.current.partition, data.aws_caller_identity.current.account_id),
+      format("arn:%s:iam::%s:role/aws-service-role/guardduty.amazonaws.com/*", data.aws_partition.current.partition, data.aws_caller_identity.current.account_id),
+      format("arn:%s:iam::%s:role/aws-service-role/malware-protection.guardduty.amazonaws.com/*", data.aws_partition.current.partition, data.aws_caller_identity.current.account_id),
+      format("arn:%s:iam::%s:role/aws-service-role/securityhub.amazonaws.com/*", data.aws_partition.current.partition, data.aws_caller_identity.current.account_id)
+    ]
+  }
+
+  statement {
     sid    = "AllowSecurityServiceLinkedRoles"
     effect = "Allow"
 
@@ -74,6 +95,7 @@ data "aws_iam_policy_document" "terraform_apply_identity_management" {
         "ecs.amazonaws.com",
         "elasticache.amazonaws.com",
         "guardduty.amazonaws.com",
+        "malware-protection.guardduty.amazonaws.com",
         "securityhub.amazonaws.com"
       ]
     }
@@ -94,4 +116,3 @@ resource "aws_iam_role_policy_attachment" "terraform_apply_identity_management" 
   role       = aws_iam_role.terraform_apply.name
   policy_arn = aws_iam_policy.terraform_apply_identity_management.arn
 }
-
