@@ -14,6 +14,7 @@ data "aws_iam_policy_document" "terraform_apply_service_refresh" {
       "cloudtrail:ListTags",
       "cloudwatch:DescribeAlarms",
       "cloudwatch:GetDashboard",
+      "cloudwatch:ListTagsForResource",
       "cloudwatch:ListDashboards",
       "config:DescribeConfigurationRecorders",
       "config:DescribeConfigurationRecorderStatus",
@@ -87,6 +88,7 @@ data "aws_iam_policy_document" "terraform_apply_service_refresh" {
       "rds:DescribeDBParameters",
       "rds:DescribeDBSubnetGroups",
       "rds:ListTagsForResource",
+      "s3:GetBucketAcl",
       "s3:GetBucketEncryption",
       "s3:GetBucketLifecycleConfiguration",
       "s3:GetBucketLocation",
@@ -142,3 +144,4 @@ resource "aws_iam_role_policy_attachment" "terraform_apply_service_refresh" {
   role       = aws_iam_role.terraform_apply.name
   policy_arn = aws_iam_policy.terraform_apply_service_refresh.arn
 }
+
