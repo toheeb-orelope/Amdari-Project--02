@@ -1,5 +1,18 @@
 # WAF module
 
+## Architecture diagram
+
+```mermaid
+flowchart TB
+  internet[Internet traffic] --> waf[AWS WAFv2 Web ACL]
+  waf --> common[AWS Common managed rules]
+  waf --> sqli[SQLi managed rules]
+  waf --> xss[Known bad inputs / XSS coverage]
+  waf --> rate[Custom payments endpoint rate limit]
+  waf --> alb[Application Load Balancer]
+  waf --> logs[WAF logs<br/>CloudWatch Logs + CMK]
+```
+
 This module owns AWS WAF protection for the edge.
 
 Why it matters:

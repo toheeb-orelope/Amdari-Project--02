@@ -1,5 +1,25 @@
 # KMS module
 
+## Architecture diagram
+
+```mermaid
+flowchart TB
+  admins[Key administrators] --> policies[KMS key policies]
+  users[Key users / AWS services] --> policies
+  policies --> logs[KMS logs key]
+  policies --> secrets[KMS secrets key]
+  policies --> s3[KMS S3 key]
+  policies --> rds[KMS RDS key]
+  policies --> redis[KMS Redis key]
+  policies --> ecs[KMS ECS/logs key]
+  cw[CloudWatch Logs] --> logs
+  ct[CloudTrail / Config] --> logs
+  sm[Secrets Manager] --> secrets
+  buckets[S3 buckets] --> s3
+  db[RDS PostgreSQL] --> rds
+  cache[ElastiCache Redis] --> redis
+```
+
 This module creates customer-managed KMS keys for project encryption domains.
 
 Why it matters:

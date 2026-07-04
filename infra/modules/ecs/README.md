@@ -1,5 +1,21 @@
 # ECS module
 
+## Architecture diagram
+
+```mermaid
+flowchart TB
+  alb[ALB target groups] --> payments[ECS Fargate payments-api<br/>private subnet + task role]
+  alb --> kyc[ECS Fargate kyc-api<br/>private subnet + task role]
+  payments --> rds[(RDS PostgreSQL)]
+  payments --> redis[(Redis)]
+  payments --> sm[Secrets Manager]
+  kyc --> rds
+  kyc --> sm
+  kyc --> s3[KYC S3 bucket]
+  payments --> logs[CloudWatch Logs CMK]
+  kyc --> logs
+```
+
 This module runs the application services on ECS Fargate.
 
 Why it matters:

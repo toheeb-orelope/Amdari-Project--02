@@ -1,5 +1,23 @@
 # Network module
 
+## Architecture diagram
+
+```mermaid
+flowchart TB
+  vpc[VPC CIDR] --> pub[Public subnets<br/>2+ AZs]
+  vpc --> app[Private app subnets<br/>2+ AZs]
+  vpc --> data[Private data subnets<br/>2+ AZs]
+  pub --> igw[Internet gateway]
+  pub --> nat[NAT gateways]
+  app --> nat
+  app --> flow[VPC Flow Logs]
+  data --> flow
+  alb[ALB module] --> pub
+  ecs[ECS module] --> app
+  rds[RDS module] --> data
+  redis[Redis module] --> data
+```
+
 This module creates the VPC and subnet foundation.
 
 Why it matters:

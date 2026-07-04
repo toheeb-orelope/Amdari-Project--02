@@ -1,5 +1,21 @@
 # CI/CD OIDC module
 
+## Architecture diagram
+
+```mermaid
+flowchart TB
+  gh[GitHub Actions] --> oidc[GitHub OIDC provider]
+  oidc --> plan[Terraform plan role<br/>read-only discovery]
+  oidc --> apply[Protected Terraform apply role<br/>service-area CRUD]
+  oidc --> ecr[ECR push role]
+  oidc --> signer[Lambda signing role]
+  apply --> state[S3 remote state + DynamoDB lock]
+  apply --> foundation[Terraform-managed AWS stack]
+  ecr --> registry[ECR repositories]
+  signer --> awsSigner[AWS Signer profiles]
+  admin[Operator bootstrap] -. applies first .-> apply
+```
+
 This module should own GitHub Actions to AWS federation using OpenID Connect.
 
 What belongs here:

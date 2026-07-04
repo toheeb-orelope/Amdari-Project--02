@@ -1,5 +1,19 @@
 # Secrets module
 
+## Architecture diagram
+
+```mermaid
+flowchart LR
+  apps[ECS task roles] --> sm[Secrets Manager secrets]
+  rotation[Rotation Lambda hook] --> sm
+  sm --> kms[KMS secrets key]
+  sm --> redis[Redis AUTH token]
+  sm --> db[RDS credentials]
+  sm --> jwt[JWT/session/webhook secrets]
+  sm --> kyc[KYC provider credentials]
+  honey[Honeytoken decoy secret] -. no automatic rotation .-> sm
+```
+
 This module owns Secrets Manager secret metadata and access policies.
 
 Why it matters:

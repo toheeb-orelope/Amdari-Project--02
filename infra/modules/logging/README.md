@@ -1,5 +1,20 @@
 # Logging module
 
+## Architecture diagram
+
+```mermaid
+flowchart TB
+  ct[CloudTrail org trail] --> ctbucket[CloudTrail log bucket<br/>Object Lock + CMK]
+  ct --> cwlogs[CloudWatch log group<br/>CMK encrypted]
+  s3[S3 buckets] --> access[S3 access-log bucket]
+  vpc[VPC Flow Logs] --> cwlogs
+  cfg[AWS Config] --> cfgbucket[Config log bucket]
+  ctbucket --> kms[KMS logs key]
+  cwlogs --> kms
+  access --> kms
+  cfgbucket --> kms
+```
+
 This module owns audit and security log storage.
 
 Why it matters:

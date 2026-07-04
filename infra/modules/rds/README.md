@@ -1,5 +1,18 @@
 # RDS module
 
+## Architecture diagram
+
+```mermaid
+flowchart LR
+  ecsSG[Application security groups] --> rdsSG[RDS security group]
+  rdsSG --> pg[(PostgreSQL RDS<br/>private subnets only)]
+  pg --> subnet[RDS subnet group<br/>data subnets across AZs]
+  pg --> kms[KMS RDS key]
+  pg --> logs[CloudWatch PostgreSQL logs]
+  pg --> sm[Managed master user secret<br/>Secrets Manager + CMK]
+  monitor[Enhanced monitoring role] --> pg
+```
+
 This module owns the PostgreSQL database layer.
 
 Why it matters:

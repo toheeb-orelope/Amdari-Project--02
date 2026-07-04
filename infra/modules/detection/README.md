@@ -1,5 +1,19 @@
 # Detection module
 
+## Architecture diagram
+
+```mermaid
+flowchart TB
+  gd[GuardDuty detector<br/>S3/RDS/Lambda/EBS/runtime protections] --> eb[EventBridge high-severity rule]
+  eb --> lambda[Containment Lambda]
+  sh[Security Hub<br/>AFSBP + CIS] --> findings[Central findings]
+  cfg[AWS Config<br/>recorder + CIS conformance pack] --> findings
+  ct[CloudTrail org trail] --> audit[Audit log bucket]
+  honey[Honeytoken access key use] --> alarm[CloudWatch alarm]
+  audit --> kms[KMS logs key]
+  lambda --> iam[Scoped containment IAM role]
+```
+
 This module owns cloud-native security detection and response controls.
 
 Why it matters:

@@ -1,5 +1,17 @@
 # Redis module
 
+## Architecture diagram
+
+```mermaid
+flowchart LR
+  ecsSG[Application security groups] --> redisSG[Redis security group]
+  redisSG --> redis[(ElastiCache Redis replication group<br/>private subnets)]
+  redis --> tls[Transit encryption]
+  redis --> kms[KMS Redis key<br/>at-rest encryption]
+  redis --> auth[AUTH token from Secrets Manager]
+  redis --> logs[Slow log + engine log<br/>CloudWatch Logs CMK]
+```
+
 This module owns the ElastiCache Redis layer.
 
 Why it matters:

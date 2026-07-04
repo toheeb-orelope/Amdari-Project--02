@@ -1,5 +1,20 @@
 # S3 module
 
+## Architecture diagram
+
+```mermaid
+flowchart TB
+  kyc[KYC API task role] --> bucket[KYC documents bucket]
+  bucket --> enc[Default SSE-KMS encryption]
+  bucket --> versioning[Versioning]
+  bucket --> lock[Object Lock governance mode]
+  bucket --> pab[Public access block]
+  bucket --> access[S3 server access logging]
+  bucket --> lifecycle[Lifecycle/retention rules]
+  enc --> kms[KMS S3 key]
+  access --> logbucket[Central access-log bucket]
+```
+
 This module owns the KYC document bucket.
 
 Why it matters:

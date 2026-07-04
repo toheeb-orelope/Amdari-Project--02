@@ -1,5 +1,21 @@
 # ALB module
 
+## Architecture diagram
+
+```mermaid
+flowchart LR
+  clients[Internet clients] --> http[HTTP listener :80]
+  http --> redirect[Redirect to HTTPS]
+  clients --> https[HTTPS listener :443]
+  https --> rules[Path-based listener rules]
+  rules --> payTG[payments target group]
+  rules --> kycTG[kyc target group]
+  payTG --> payments[ECS payments-api private tasks]
+  kycTG --> kyc[ECS kyc-api private tasks]
+  waf[WAF Web ACL] --> https
+  https --> logs[ALB access logs to S3]
+```
+
 This module owns the public Application Load Balancer entry point for SentinelPay.
 
 Why it matters:

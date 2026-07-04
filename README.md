@@ -1,5 +1,61 @@
 # SentinelPay — Pan-African Payments Platform
 
+## Hardened AWS architecture
+
+```mermaid
+flowchart TB
+  user[Internet clients] --> dns[Route 53 hosted zone + DNSSEC]
+  dns --> waf[AWS WAF<br/>Common + SQLi + XSS + payments rate limit]
+  waf --> alb[Application Load Balancer<br/>HTTPS termination + access logs]
+
+  subgraph vpc[VPC across at least two Availability Zones]
+    subgraph public[Public subnets]
+      alb
+      nat[NAT gateways]
+    end
+    subgraph app[Private application subnets]
+      payments[ECS Fargate<br/>payments-api task role]
+      kyc[ECS Fargate<br/>kyc-api task role]
+    end
+    subgraph data[Private data subnets]
+      rds[(RDS PostgreSQL<br/>CMK encrypted)]
+      redis[(ElastiCache Redis<br/>TLS + AUTH + CMK)]
+    end
+  end
+
+  alb --> payments
+  alb --> kyc
+  payments --> rds
+  payments --> redis
+  kyc --> rds
+  kyc --> kycS3[(KYC S3 bucket<br/>Object Lock + versioning + CMK)]
+  payments --> secrets[Secrets Manager<br/>runtime secrets + rotation hooks]
+  kyc --> secrets
+  secrets --> kms[KMS customer-managed keys<br/>separation of admin/use]
+  rds --> kms
+  redis --> kms
+  kycS3 --> kms
+
+  subgraph detection[Detection and response plane]
+    gd[GuardDuty protection plans]
+    sh[Security Hub standards]
+    cfg[AWS Config + CIS pack]
+    ct[CloudTrail org trail<br/>validation + Object Lock bucket]
+    eb[EventBridge high severity rule]
+    lam[Containment Lambda]
+    honey[Honeytoken IAM key alarm]
+  end
+
+  vpc --> flow[VPC Flow Logs]
+  flow --> logs[CloudWatch Logs + S3 audit buckets]
+  ct --> logs
+  gd --> eb --> lam
+  honey --> cw[CloudWatch alarm]
+  gh[GitHub Actions<br/>OIDC only] --> cicd[Terraform plan/apply roles<br/>ECR push + Signer]
+  cicd --> vpc
+  cicd --> detection
+```
+
 > ⚠️ **This is a deliberately vulnerable training codebase. Do not deploy to a real environment.**
 >
 > This repository ships with documented security vulnerabilities for the VaultBridge SentinelPay Capstone Engagement. Every flaw exists on purpose. Your job is to find them, fix them, and prove your fixes work — across the application, the cloud deployment you will build, and the CI/CD pipeline you will design.

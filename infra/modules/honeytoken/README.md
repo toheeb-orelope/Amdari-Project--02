@@ -1,5 +1,17 @@
 # Honeytoken module
 
+## Architecture diagram
+
+```mermaid
+flowchart LR
+  decoy[IAM decoy access key] --> secret[Decoy location reachable from app memory]
+  use[Unauthorized key use] --> cloudtrail[CloudTrail event]
+  cloudtrail --> metric[CloudWatch metric filter]
+  metric --> alarm[CloudWatch alarm]
+  alarm --> sns[SNS alert topic]
+  deny[Deny-all inline policy] --> decoy
+```
+
 This module creates the detection wiring for a decoy credential.
 
 Why it matters:

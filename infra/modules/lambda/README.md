@@ -1,5 +1,20 @@
 # Lambda module
 
+## Architecture diagram
+
+```mermaid
+flowchart TB
+  eb[EventBridge GuardDuty rule] --> containment[GuardDuty containment Lambda]
+  sm[Secrets Manager rotation schedule] --> rotation[Secret rotation Lambda]
+  containment --> dlq1[SQS DLQ]
+  rotation --> dlq2[SQS DLQ]
+  containment --> logs[CloudWatch Logs CMK]
+  rotation --> logs
+  signer[AWS Signer profile] --> csc[Lambda code signing config<br/>Enforce untrusted artifacts]
+  csc --> containment
+  csc --> rotation
+```
+
 This module owns Lambda functions used for security automation and secret rotation.
 
 Why it matters:

@@ -1,5 +1,22 @@
 # Dev environment bootstrap and reconciliation
 
+## Architecture diagram
+
+```mermaid
+flowchart TB
+  admin[Local operator/admin] --> foundation[Targeted foundation reconciliation<br/>module.cicd_oidc + module.kms]
+  foundation --> oidc[GitHub OIDC roles and policies]
+  foundation --> kms[KMS keys and key policies]
+  gh[GitHub Actions deploy-dev] --> oidc
+  gh --> stack[Full dev Terraform stack]
+  kms --> stack
+  stack --> network[VPC + subnets + flow logs]
+  stack --> edge[ALB + WAF]
+  stack --> app[ECS payments-api + kyc-api]
+  stack --> data[RDS + Redis + KYC S3]
+  stack --> detect[GuardDuty + Security Hub + Config + CloudTrail + honeytoken]
+```
+
 This environment is deployed by GitHub Actions after the Terraform foundation exists.
 The GitHub Actions apply role cannot reliably create or repair its own IAM permissions, and encrypted resources must not be created before the customer-managed KMS key policies are attached.
 

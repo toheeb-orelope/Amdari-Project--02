@@ -1,5 +1,19 @@
 # Bootstrap
 
+## Architecture diagram
+
+```mermaid
+flowchart LR
+  operator[Operator/admin session] --> bootstrap[Terraform bootstrap]
+  bootstrap --> state[S3 Terraform state bucket<br/>versioning + encryption + HTTPS-only]
+  bootstrap --> lock[DynamoDB lock table]
+  bootstrap --> kms[KMS key for state encryption]
+  state --> logs[S3 access-log bucket]
+  gh[GitHub Actions OIDC roles] -. consume backend .-> state
+  gh -. acquire locks .-> lock
+  state --> kms
+```
+
 One-time setup that creates the remote backend used by the `infra/` workspace. Run this locally before anything else.
 
 ## What it provisions

@@ -1,5 +1,21 @@
 # Monitoring module
 
+## Architecture diagram
+
+```mermaid
+flowchart TB
+  metrics[CloudWatch metrics] --> alarms[CloudWatch alarms]
+  alarms --> sns[SNS alert topic]
+  sns --> email[Email subscribers]
+  metrics --> dashboard[CloudWatch dashboard]
+  alb[ALB 5xx] --> metrics
+  ecs[ECS CPU/service health] --> metrics
+  rds[RDS CPU] --> metrics
+  redis[Redis CPU] --> metrics
+  lambda[Lambda errors] --> metrics
+  honey[Honeytoken use alarm] --> sns
+```
+
 This module owns operational observability and alert presentation.
 
 Why it matters:

@@ -1,5 +1,15 @@
 # Route 53 module
 
+## Architecture diagram
+
+```mermaid
+flowchart LR
+  domain[Hosted zone] --> dnssec[DNSSEC signing<br/>Route 53 KSK + KMS us-east-1]
+  domain --> records[Alias/CNAME records]
+  records --> alb[Application Load Balancer DNS]
+  domain --> qlogs[Route 53 query logs<br/>optional when enabled]
+```
+
 This module owns DNS records and hosted zone DNSSEC.
 
 Why it matters:
